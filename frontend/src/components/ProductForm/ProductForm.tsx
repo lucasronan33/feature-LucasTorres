@@ -7,6 +7,7 @@ export default function ProductForm({ onCreated }) {
   const [inStock, setInStock] = useState(false);
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
+  const [error, setError] = useState("");
 
   // Carregar categorias
   useEffect(() => {
@@ -26,7 +27,10 @@ export default function ProductForm({ onCreated }) {
     };
 
     try {
-      const res = await axios.post("http://localhost:8000/api/products/", payload);
+      const res = await axios.post(
+        "http://localhost:8000/api/products/",
+        payload
+      );
 
       // --------------------------------------
       //    ENVIAR PRODUTO CRIADO PARA O PAI
@@ -40,15 +44,22 @@ export default function ProductForm({ onCreated }) {
       setPrice("");
       setInStock(false);
       setCategory("");
-
     } catch (err) {
       console.error("Erro ao criar produto", err);
+
+      if (err.response?.data) {
+        setError(JSON.stringify(err.response.data));
+      } else {
+        setError("Erro inesperado ao criar produto.");
+      }
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow mb-6 max-w-md space-y-4">
-
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white p-4 rounded shadow mb-6 max-w-md space-y-4"
+    >
       <input
         className="w-full border p-2 rounded"
         type="text"
@@ -91,6 +102,12 @@ export default function ProductForm({ onCreated }) {
         />
         <span>Em estoque</span>
       </label>
+
+      {error && (
+        <div className="bg-red-100 text-red-700 border border-red-300 p-2 rounded">
+          {error}
+        </div>
+      )}
 
       <button className="bg-blue-600 text-white px-4 py-2 rounded">
         Criar Produto

@@ -7,12 +7,13 @@ function App() {
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    api.get<Product[]>("products/")
+    api
+      .get<Product[]>("products/")
       .then((res) => setProducts(res.data))
       .catch((err) => console.error("Erro ao carregar produtos:", err));
   }, []);
 
-   const handleCreated = (newProduct) => {
+  const handleCreated = (newProduct) => {
     setProducts((prev) => [...prev, newProduct]);
   };
 
